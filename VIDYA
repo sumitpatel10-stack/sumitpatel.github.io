@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Vidya — Find Your College</title>
+  <style>
+    :root{
+      --bg1:#0f172a; /* dark navy */
+      --accent1:#7c3aed; /* violet */
+      --accent2:#06b6d4; /* cyan */
+      --glass: rgba(255,255,255,0.06);
+      --glass-2: rgba(255,255,255,0.03);
+      --text:#e6eef8;
+      --muted: rgba(230,238,248,0.7);
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+      background: radial-gradient(1200px 600px at 10% 20%, rgba(124,58,237,0.12), transparent),
+                  radial-gradient(800px 400px at 90% 80%, rgba(6,182,212,0.08), transparent),
+                  linear-gradient(180deg, var(--bg1), #031026 140%);
+      color:var(--text);
+      min-height:100vh;
+      -webkit-font-smoothing:antialiased;
+    }
+
+    /* Animated blobs (SVG-like using pseudo elements) */
+    .hero {
+      position:relative;
+      overflow:hidden;
+      padding:48px 20px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+    .hero-grid{
+      width:100%;
+      max-width:1200px;
+      display:grid;
+      grid-template-columns: 1fr 420px;
+      gap:32px;
+      align-items:center;
+    }
+
+    .left{
+      padding:12px 6px;
+    }
+    h1{
+      font-size: clamp(28px, 3.6vw, 44px);
+      margin:0 0 12px 0;
+      line-height:1.02;
+      background:linear-gradient(90deg,var(--accent2),var(--accent1));
+      -webkit-background-clip:text;
+      background-clip:text;
+      color:transparent;
+      filter:drop-shadow(0 6px 18px rgba(124,58,237,0.18));
+      transform-origin:left center;
+      animation: floatIn 700ms ease-out both;
+    }
+    @keyframes floatIn{ from{opacity:0; transform:translateY(8px) scale(0.998)} to{opacity:1; transform:none} }
+    p.lead{
+      color:var(--muted);
+      margin:0 0 18px 0;
+      font-size:1rem;
+    }
+
+    /* CTA button */
+    .cta{
+      display:inline-flex;
+      gap:10px;
+      align-items:center;
+      padding:12px 18px;
+      border-radius:12px;
+      background: linear-gradient(90deg, rgba(124,58,237,0.16), rgba(6,182,212,0.12));
+      border: 1px solid rgba(255,255,255,0.04);
+      color:var(--text);
+      cursor:pointer;
+      backdrop-filter: blur(6px) saturate(120%);
+      box-shadow: 0 6px 30px rgba(2,6,23,0.6);
+      text-decoration:none;
+      font-weight:600;
+    }
+    .cta .dot{
+      width:10px;height:10px;border-radius:999px;background:linear-gradient(45deg,var(--accent1),var(--accent2));
+      box-shadow:0 6px 18px rgba(6,182,212,0.12),0 2px 6px rgba(124,58,237,0.14);
+      animation: pulse 1800ms infinite;
+    }
+    @keyframes pulse{0%{transform:scale(1)}50%{transform:scale(1.12)}100%{transform:scale(1)}}
+
+    /* Glass form */
+    .glass-card{
+      background: linear-gradient(180deg, var(--glass), var(--glass-2));
+      border-radius:16px;
+      padding:18px;
+      box-shadow: 0 10px 30px rgba(2,6,23,0.6), inset 0 1px 0 rgba(255,255,255,0.02);
+      border: 1px solid rgba(255,255,255,0.06);
+      backdrop-filter: blur(8px) saturate(120%);
+    }
+
+    label{display:block;font-size:0.85rem;color:var(--muted);margin-bottom:6px}
+    input[type=text], input[type=tel], input[type=number], select{
+      width:100%;
+      padding:12px 12px;
+      border-radius:10px;
+      border:1px solid rgba(255,255,255,0.06);
+      background: rgba(10,14,24,0.45);
+      color:var(--text);
+      outline:none;
+      transition: box-shadow 180ms, transform 120ms;
+      font-size:0.98rem;
+    }
+    input:focus, select:focus{ box-shadow: 0 6px 20px rgba(124,58,237,0.14); transform:translateY(-2px)}
+
+    .form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+    .form-row.full{grid-template-columns:1fr}
+
+    .submit-btn{
+      margin-top:8px;
+      width:100%;
+      padding:12px 14px;
+      border-radius:10px;
+      background: linear-gradient(90deg, var(--accent1), var(--accent2));
+      border:none;color:white;font-weight:700;font-size:1rem;cursor:pointer;
+      box-shadow: 0 8px 30px rgba(124,58,237,0.18);
+    }
+
+    /* Right side illustration */
+    .illustration{
+      position:relative;
+      height:420px;
+      display:flex;align-items:center;justify-content:center;
+    }
+    .illus-card{
+      width:360px;height:360px;border-radius:28px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border:1px solid rgba(255,255,255,0.04);
+      display:flex;flex-direction:column;align-items:center;justify-content:center;
+      transform: translateY(0);
+      transition: transform 400ms ease;
+      box-shadow: 0 20px 60px rgba(2,6,23,0.6);
+    }
+    .illus-card:hover{ transform: translateY(-8px) }
+
+    /* Simple vector-ish illustration using CSS */
+    .grad-circle{ width:160px; height:160px; border-radius:999px; background: radial-gradient(circle at 30% 30%, rgba(124,58,237,0.9), rgba(6,182,212,0.6)); box-shadow: 0 12px 40px rgba(6,182,212,0.12); }
+    .hat{ width:140px; height:48px; background: linear-gradient(90deg,#111827,#0f172a); border-radius:12px 12px 20px 20px; margin-top:10px; box-shadow: inset 0 -6px 18px rgba(255,255,255,0.02)}
+    .book-stack{ display:flex; gap:6px;margin-top:14px }
+    .book{ width:44px;height:28px;border-radius:6px; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.04); transform:rotate(-6deg)}
+
+    /* Results area */
+    .results{
+      margin-top:28px;
+      display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px
+    }
+    .card-result{ background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); padding:12px;border-radius:12px;border:1px solid rgba(255,255,255,0.04);}
+    .card-result h4{ margin:0 0 6px 0; color:var(--accent1); }
+    .muted{ color:var(--muted); font-size:0.9rem }
+
+    /* Animations for cards */
+    .card-result{ opacity:0; transform: translateY(12px) scale(0.997); animation: cardIn 600ms ease forwards; }
+    .card-result:nth-child(1){ animation-delay: 140ms }
+    .card-result:nth-child(2){ animation-delay: 240ms }
+    .card-result:nth-child(3){ animation-delay: 340ms }
+    @keyframes cardIn{ to{ opacity:1; transform:none } }
+
+    /* Responsive */
+    @media (max-width:980px){ .hero-grid{ grid-template-columns: 1fr; } .illustration{ order:-1; margin-bottom:18px;height:320px } }
+    @media (max-width:480px){ .illus-card{ width:300px; height:300px } }
+
+    footer{ text-align:center;padding:28px 12px;color:var(--muted); font-size:0.9rem }
+  </style>
+</head>
+<body>
+  <main class="hero">
+    <div class="hero-grid">
+      <div class="left">
+        <h1>Find Your Perfect College with <span style="color:transparent;background:linear-gradient(90deg,var(--accent2),var(--accent1));-webkit-background-clip:text;background-clip:text">Vidya</span></h1>
+        <p class="lead">Enter your details and get instant college matches based on your stream, class 12 percentage and JEE score. Modern, fast and student-friendly.</p>
+
+        <div class="glass-card" id="searchCard">
+          <form id="studentForm">
+            <div class="form-row full">
+              <label for="sname">Student Name</label>
+              <input type="text" id="sname" name="sname" placeholder="Rahul Sharma" required />
+            </div>
+
+            <div class="form-row">
+              <div>
+                <label for="mobile">Mobile Number</label>
+                <input type="tel" id="mobile" name="mobile" placeholder="+91 98765 43210" pattern="[0-9+\- ]{7,20}" required />
+              </div>
+              <div>
+                <label for="city">City</label>
+                <input type="text" id="city" name="city" placeholder="Indore" />
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div>
+                <label for="percentage">12th Percentage (%)</label>
+                <input type="number" id="percentage" name="percentage" min="0" max="100" step="0.01" placeholder="85.6" required />
+              </div>
+              <div>
+                <label for="jee">JEE Score (if any)</label>
+                <input type="number" id="jee" name="jee" min="0" step="0.01" placeholder="---" />
+              </div>
+            </div>
+
+            <div class="form-row full">
+              <label for="stream">Stream</label>
+              <select id="stream" name="stream">
+                <option value="">Select stream</option>
+                <option value="Engineering">Engineering</option>
+                <option value="Medical">Medical</option>
+                <option value="Arts">Arts</option>
+                <option value="Commerce">Commerce</option>
+                <option value="Science">Science</option>
+              </select>
+            </div>
+
+            <button class="submit-btn" type="submit">Search Colleges</button>
+          </form>
+
+          <div id="resultsArea" style="display:none; margin-top:12px">
+            <h3 style="margin:6px 0 10px 0;color:var(--text)">Recommended Colleges</h3>
+            <div class="results" id="results"></div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="illustration">
+        <div class="illus-card">
+          <div class="grad-circle"></div>
+          <div class="hat"></div>
+          <div class="book-stack">
+            <div class="book"></div>
+            <div class="book"></div>
+            <div class="book"></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer>
+    Built with ❤ — Vidya · College Finder
+  </footer>
+
+  <script>
+    // Comprehensive college database with focus on Indore Medical & Engineering
+    const colleges = [
+      // Engineering Colleges in Indore
+      { name: 'IIT Indore', city: 'Indore', stream: 'Engineering', fees: '2,50,000/yr', scoreReq: 100 },
+      { name: 'SVNIT Surat (Regional Center Indore)', city: 'Indore', stream: 'Engineering', fees: '1,80,000/yr', scoreReq: 92 },
+      { name: 'Maulana Azad National Institute of Technology (MANIT)', city: 'Indore', stream: 'Engineering', fees: '1,20,000/yr', scoreReq: 88 },
+      { name: 'Shri Govindram Seksaria Institute of Technology and Science (SGSITS)', city: 'Indore', stream: 'Engineering', fees: '90,000/yr', scoreReq: 82 },
+      { name: 'Institute of Engineering and Technology (IET DAVV)', city: 'Indore', stream: 'Engineering', fees: '75,000/yr', scoreReq: 78 },
+      { name: 'Acropolis Institute of Technology and Research', city: 'Indore', stream: 'Engineering', fees: '1,20,000/yr', scoreReq: 70 },
+      { name: 'Oriental Institute of Science and Technology', city: 'Indore', stream: 'Engineering', fees: '85,000/yr', scoreReq: 65 },
+      { name: 'Chameli Devi Group of Institutions', city: 'Indore', stream: 'Engineering', fees: '95,000/yr', scoreReq: 68 },
+      { name: 'Indore Institute of Science and Technology', city: 'Indore', stream: 'Engineering', fees: '80,000/yr', scoreReq: 72 },
+      { name: 'Medicaps University', city: 'Indore', stream: 'Engineering', fees: '1,50,000/yr', scoreReq: 75 },
+      { name: 'MIT Academy of Engineering', city: 'Indore', stream: 'Engineering', fees: '1,10,000/yr', scoreReq: 70 },
+      { name: 'Prestige Institute of Engineering Management and Research', city: 'Indore', stream: 'Engineering', fees: '1,25,000/yr', scoreReq: 73 },
+      { name: 'Vikrant Institute of Technology and Management', city: 'Indore', stream: 'Engineering', fees: '90,000/yr', scoreReq: 67 },
+      { name: 'Rustamji Institute of Technology', city: 'Indore', stream: 'Engineering', fees: '85,000/yr', scoreReq: 65 },
+      { name: 'Samrat Ashok Technological Institute (SATI)', city: 'Indore', stream: 'Engineering', fees: '70,000/yr', scoreReq: 75 },
+       {name: 'Swami vivekanand college of engineering (SVCE)', city: 'Indore', stream: 'Engineering', fees: '60,000/yr', scoreReq: 65 },
+      
+      // Medical Colleges in Indore
+      { name: 'Mahatma Gandhi Memorial Medical College (MGMMC)', city: 'Indore', stream: 'Medical', fees: '15,000/yr', scoreReq: 95 },
+      { name: 'Sri Aurobindo Medical College and PG Institute', city: 'Indore', stream: 'Medical', fees: '8,50,000/yr', scoreReq: 88 },
+      { name: 'Index Medical College Hospital and Research Centre', city: 'Indore', stream: 'Medical', fees: '12,00,000/yr', scoreReq: 85 },
+      { name: 'Government Medical College Indore', city: 'Indore', stream: 'Medical', fees: '12,000/yr', scoreReq: 96 },
+      { name: 'Choithram Hospital and Research Centre (Dental)', city: 'Indore', stream: 'Medical', fees: '6,50,000/yr', scoreReq: 82 },
+      { name: 'Modern Dental College and Research Centre', city: 'Indore', stream: 'Medical', fees: '5,80,000/yr', scoreReq: 80 },
+      { name: 'College of Dental Science and Hospital', city: 'Indore', stream: 'Medical', fees: '4,50,000/yr', scoreReq: 78 },
+      { name: 'Mandsaur Institute of Dental Sciences (Indore Campus)', city: 'Indore', stream: 'Medical', fees: '3,20,000/yr', scoreReq: 75 },
+      { name: 'Indore Institute of Medical Sciences', city: 'Indore', stream: 'Medical', fees: '7,80,000/yr', scoreReq: 83 },
+      { name: 'AIIMS Indore (All India Institute of Medical Sciences)', city: 'Indore', stream: 'Medical', fees: '5,856/yr', scoreReq: 98 },
+      
+      // Other streams (keeping some variety)
+      { name: 'School of Economics DAVV', city: 'Indore', stream: 'Arts', fees: '25,000/yr', scoreReq: 65 },
+      { name: 'Indore Christian College', city: 'Indore', stream: 'Arts', fees: '35,000/yr', scoreReq: 60 },
+      { name: 'Holkar Science College DAVV', city: 'Indore', stream: 'Science', fees: '30,000/yr', scoreReq: 70 },
+      { name: 'Government Commerce College Indore', city: 'Indore', stream: 'Commerce', fees: '20,000/yr', scoreReq: 62 },
+      { name: 'Prestige Institute of Management and Research', city: 'Indore', stream: 'Commerce', fees: '85,000/yr', scoreReq: 68 },
+    ];
+
+    const form = document.getElementById('studentForm');
+    const resultsArea = document.getElementById('resultsArea');
+    const resultsDiv = document.getElementById('results');
+
+    // Debug: Check if elements exist
+    console.log('Form:', form);
+    console.log('Results Area:', resultsArea);
+    console.log('Results Div:', resultsDiv);
+
+    form.addEventListener('submit', function(e){
+      console.log('Form submitted!'); // Debug log
+      e.preventDefault();
+      
+      // read values
+      const name = document.getElementById('sname').value.trim();
+      const mobile = document.getElementById('mobile').value.trim();
+      const city = document.getElementById('city').value.trim();
+      const percent = parseFloat(document.getElementById('percentage').value) || 0;
+      const jee = parseFloat(document.getElementById('jee').value) || null;
+      const stream = document.getElementById('stream').value;
+
+      console.log('Form data:', {name, mobile, city, percent, jee, stream}); // Debug log
+
+      // basic validation
+      if(!name || !mobile || !percent || !stream){
+        alert('Please fill name, mobile, 12th percentage and stream.');
+        return;
+      }
+
+      console.log('Validation passed, searching colleges...'); // Debug log
+
+      // Generate matches: simple logic -> match stream, then percentage >= scoreReq*0.9
+      const matches = colleges.filter(c => c.stream === stream)
+        .map(c => {
+          // score match percentage
+          const matchScore = Math.max(0, Math.min(100, (percent / c.scoreReq) * 100));
+          return {...c, matchScore: Math.round(matchScore)};
+        })
+        .sort((a,b) => b.matchScore - a.matchScore);
+
+      console.log('Stream matches found:', matches.length); // Debug log
+
+      // If no matches in same stream, relax to all
+      const finalMatches = matches.length ? matches : colleges.map(c => ({...c, matchScore: Math.round((percent / c.scoreReq) * 100)})).sort((a,b)=>b.matchScore-a.matchScore).slice(0,3);
+
+      console.log('Final matches:', finalMatches.length); // Debug log
+
+      // show results
+      resultsDiv.innerHTML = '';
+      finalMatches.slice(0,6).forEach((c, idx) => {
+        const card = document.createElement('div');
+        card.className = 'card-result';
+        card.style.animationDelay = (120 * idx) + 'ms';
+        card.innerHTML = `<h4>${c.name}</h4>
+                          <div class="muted">${c.city} · ${c.stream}</div>
+                          <p style="margin:8px 0 0 0">Fees: ${c.fees}</p>
+                          <p style="margin:6px 0 0 0;color:var(--muted)">Match: ${c.matchScore}%</p>
+                          <a href="#" style="display:inline-block;margin-top:8px;color:var(--accent2);text-decoration:none;font-weight:600">View details</a>`;
+        resultsDiv.appendChild(card);
+      });
+
+      resultsArea.style.display = 'block';
+      console.log('Results displayed!'); // Debug log
+      
+      // smooth scroll to results (mobile-friendly)
+      setTimeout(() => {
+        resultsArea.scrollIntoView({behavior:'smooth', block:'start'});
+      }, 100);
+    });
+
+    // Alternative: Also add click event to button directly
+    const submitBtn = document.querySelector('.submit-btn');
+    submitBtn.addEventListener('click', function(e) {
+      console.log('Submit button clicked!'); // Debug log
+      // The form submit event should handle this, but this is a backup
+    });
+  </script>
+</body>
+</html>
